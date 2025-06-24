@@ -1,14 +1,15 @@
 import express, { Application } from "express";
-import routes from "./routes";
+
 import dotenv from "dotenv";
 import { AppDataSource } from "models/config/database";
+import appRoutes from "app/appRoutes";
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.APP_PORT || 3000;
 
 app.use(express.json());
-app.use("/api", routes);
+app.use("/api", appRoutes);
 AppDataSource.initialize()
   .then(() => {
     app.listen(PORT, () => {
