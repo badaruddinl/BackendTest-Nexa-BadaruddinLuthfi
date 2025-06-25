@@ -2,16 +2,14 @@ import { Request, Response } from "express";
 import Interceptor from "utils/responseInterceptor.utils";
 import { AuthService } from "../services/auth.service";
 import { StatusCodes } from "http-status-codes";
+import { AppHandler } from "types/express.s";
+import { RegisterInterface } from "../interfaces";
 
-interface LoginInterface {
-  username: string;
-  password: string;
-}
-
-export const registerController = async (
-  req: Request<LoginInterface>,
-  res: Response
-) => {
+export const registerController: AppHandler<
+  {},
+  any,
+  RegisterInterface
+> = async (req: Request, res: Response) => {
   const authService = new AuthService();
 
   try {

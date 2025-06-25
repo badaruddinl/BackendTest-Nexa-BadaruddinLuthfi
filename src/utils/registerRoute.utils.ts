@@ -1,4 +1,4 @@
-import { Router, RequestHandler, NextFunction, Response } from "express";
+import { Router, RequestHandler } from "express";
 
 interface ExpressRouteOptions<
   ReqBody = any,

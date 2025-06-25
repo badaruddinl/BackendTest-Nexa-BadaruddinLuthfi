@@ -1,11 +1,17 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { registerRoute } from "utils/registerRoute.utils";
 import { loginController, registerController } from "../controllers";
+import {
+  accessValidation,
+  apiValidation,
+  bearerValidation,
+} from "services/validations";
 const authRoutes = Router();
 
 registerRoute(authRoutes, {
   method: "post",
   url: "/login",
+  // preHandler: [apiValidation, bearerValidation, accessValidation],
   handler: loginController,
 });
 
