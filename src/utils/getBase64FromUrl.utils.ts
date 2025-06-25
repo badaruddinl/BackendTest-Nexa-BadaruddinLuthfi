@@ -1,30 +1,24 @@
 import { StatusCodes } from "http-status-codes";
-import sharp from "sharp";
+import Jimp from "jimp";
 
-async function getBase64FromUrl(url: string) {
+export async function getBase64FromUrl(url: string) {
   try {
     const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch image, status: ${res.status}`);
-    }
-
-    const contentType = res.headers.get("content-type") || "image/jpeg";
-
+    if (!res.ok) throw new Error(`Fetch failed ${res.status}`);
     const buffer = Buffer.from(await res.arrayBuffer());
 
-    const compressedBuffer = await sharp(buffer)
-      .resize(200) // contoh resize width 200px
-      .jpeg({ quality: 50 })
-      .toBuffer();
-
+    const image = await Jimp.read(buffer);
+    image.resize(200, Jimp.AUTO);
+    image.quality(50);
+    const compressedBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
     const base64Data = compressedBuffer.toString("base64");
 
     return {
-      statusCodes: StatusCodes.CREATED,
+      statusCodes: StatusCodes.OK,
       success: true,
       code: "00",
       message: "is valid URL Photo",
-      data: { photo: base64Data, mimeType: contentType },
+      data: { photo: base64Data, mimeType: "image/jpeg" },
     };
   } catch (error) {
     return {
@@ -35,5 +29,3 @@ async function getBase64FromUrl(url: string) {
     };
   }
 }
-
-export { getBase64FromUrl };

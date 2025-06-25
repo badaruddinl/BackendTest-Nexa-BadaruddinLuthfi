@@ -6,7 +6,7 @@
 
 - Clone repository:
   ```bash
-  git clone https://github.com/badaruddinl/BackendTest-Nexa-Badaruddin-Luthfi.git
+  git clone https://github.com/badaruddinl/BackendTest-Nexa-BadaruddinLuthfi.git
   cd BackendTest-Nexa-Badaruddin-Luthfi
   ```
 - Buat file `.env` di root project:
@@ -31,28 +31,28 @@
   npm install
   ```
 - Build dan jalankan project:
+
   ```bash
   npm run docker-start
   ```
-  > Perintah ini akan otomatis build TypeScript (`npm run build`) dan menjalankan `node dist/app.js`
 
-### 3. Jalankan di dalam container
+  > Perintah ini akan otomatis build dengan docker`
 
-- Build image:
+  - Stop project:
+
   ```bash
-  docker build -t employee-app .
+  ctrl + c
   ```
-- Jalankan container:
-  ```bash
-  docker run -p 3002:3002 --env-file .env employee-app
-  ```
-  > Anda bisa langsung menggunakan `docker-compose` juga:
-  >
-  > ```bash
-  > docker compose up --build
-  > ```
 
-### 4. Akses API
+  atau
+
+  ```bash
+  cmnd + c
+  ```
+
+  > Perintah ini jalankan 2x akan otomatis stop project docker`
+
+### 3. Akses API
 
 Setelah container berjalan, Anda bisa mengakses API di:
 
