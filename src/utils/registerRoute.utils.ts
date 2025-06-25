@@ -1,15 +1,32 @@
 import { Router, RequestHandler, NextFunction, Response } from "express";
 
-interface ExpressRouteOptions {
+interface ExpressRouteOptions<
+  ReqBody = any,
+  ReqParams = Record<string, string>,
+  ReqQuery = Record<string, string>,
+  ResBody = any
+> {
   method: "get" | "post" | "put" | "delete" | "patch";
   url: string;
-  preHandler?: RequestHandler | RequestHandler[];
-  handler: RequestHandler;
+  preHandler?:
+    | RequestHandler<ReqParams, ResBody, ReqBody, ReqQuery>
+    | RequestHandler<ReqParams, ResBody, ReqBody, ReqQuery>[];
+  handler: RequestHandler<ReqParams, ResBody, ReqBody, ReqQuery>;
 }
 
-export const registerRoute = (
+export const registerRoute = <
+  ReqBody = any,
+  ReqParams = Record<string, string>,
+  ReqQuery = Record<string, string>,
+  ResBody = any
+>(
   router: Router,
-  { method, url, preHandler, handler }: ExpressRouteOptions
+  {
+    method,
+    url,
+    preHandler,
+    handler,
+  }: ExpressRouteOptions<ReqBody, ReqParams, ReqQuery, ResBody>
 ) => {
   const handlers = Array.isArray(preHandler)
     ? preHandler
