@@ -142,4 +142,24 @@ export class AuthService {
       data: { access_token: resultToken },
     };
   }
+
+  public async checkID(id: number) {
+    const user = await this.admin.findOneBy({ id });
+
+    if (!user) {
+      return {
+        statusCodes: StatusCodes.NOT_FOUND,
+        success: true,
+        code: "00",
+        message: "Doesn't have user",
+      };
+    }
+
+    return {
+      statusCodes: StatusCodes.OK,
+      success: true,
+      code: "00",
+      message: "Data user founded!",
+    };
+  }
 }
