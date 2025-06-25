@@ -11,42 +11,6 @@ interface CustomJwtPayload extends JwtPayload {
   username: string;
 }
 
-// const accessValidation = async (
-//   request: Request,
-//   reply: Response
-// ): Promise<any> => {
-//     try {
-//       const authService = new AuthService();
-//     const info = await getInfoCheck(request);
-
-//     if (!info) {
-//       Interceptor(reply, StatusCodes.UNAUTHORIZED, false, "01", "Unautorized");
-//       return;
-//     }
-
-//     const authorized = await authService.checkID(info.id);
-
-//     if (authorized.statusCodes === StatusCodes.NOT_FOUND) {
-//       Interceptor(
-//         reply,
-//         StatusCodes.UNAUTHORIZED,
-//         false,
-//         "01",
-//         "Unauthorized, do not have permission to access.",
-//         ""
-//       );
-//     }
-//   } catch (error) {
-//     Interceptor(
-//       reply,
-//       StatusCodes.INTERNAL_SERVER_ERROR,
-//       false,
-//       "500",
-//       "Error occurred"
-//     );
-//   }
-// };
-
 const apiValidation = async (
   request: Request,
   reply: Response,
@@ -62,7 +26,6 @@ const apiValidation = async (
     }
 
     const authorized = await authService.checkID(info.id);
-    console.log(authorized);
 
     const authorizationHeader = request.headers.authorization;
 

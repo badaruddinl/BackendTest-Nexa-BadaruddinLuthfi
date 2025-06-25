@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: employee-app
+    ports:
+      - "3002:3002"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: npm run dev

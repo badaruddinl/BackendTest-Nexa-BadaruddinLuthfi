@@ -40,7 +40,7 @@ export const decodeExpJWT = (token: string): number | null => {
   const decoded = jwt.decode(token) as JwtPayload | null;
 
   if (decoded && typeof decoded.exp === "number") {
-    return decoded.exp; // epoch detik
+    return decoded.exp;
   }
 
   return null;
@@ -50,7 +50,7 @@ export const decodeExpAsDate = (token: string): Date | null => {
   const decoded = jwt.decode(token) as JwtPayload | null;
 
   if (decoded && decoded.exp) {
-    return new Date(decoded.exp * 1000); // convert to ms
+    return new Date(decoded.exp * 1000);
   }
 
   return null;
@@ -101,10 +101,10 @@ export const isJwtFormatValid = async (token: string): Promise<boolean> => {
     Buffer.from(header, "base64").toString("utf8"); // Decode header
     Buffer.from(payload, "base64").toString("utf8"); // Decode payload
   } catch (error) {
-    return false; // Invalid base64 format
+    return false;
   }
 
-  return true; // JWT format is correct
+  return true;
 };
 
 export const isTokenExpired = (decoded: JwtPayloadExtended): boolean => {
@@ -113,5 +113,5 @@ export const isTokenExpired = (decoded: JwtPayloadExtended): boolean => {
     const currentTimestamp = Math.floor(Date.now() / 1000); // Current time in seconds
     return expirationTime < currentTimestamp;
   }
-  return true; // Missing exp claim
+  return true;
 };
