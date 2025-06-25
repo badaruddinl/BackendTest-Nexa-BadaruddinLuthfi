@@ -13,7 +13,6 @@
 
   ```env
   APP_PORT=3002
-  API_HOST=http://localhost
 
   DB_HOST=gmedia.bz
   DB_PORT=3306
