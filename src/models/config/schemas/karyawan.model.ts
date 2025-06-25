@@ -1,12 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
-@Entity("admin_token")
+@Entity("karyawan")
 export class Karyawan {
-  @PrimaryGeneratedColumn({ type: "int", unsigned: true })
-  id!: number;
-
-  @Column({ length: 50, type: "varchar", nullable: false })
+  @PrimaryColumn({ length: 50, type: "varchar", nullable: false })
   nip!: string;
+
+  @Column({ type: "int", unsigned: true })
+  id!: number;
 
   @Column({ length: 200, type: "varchar", nullable: false })
   nama!: string;
@@ -15,7 +15,7 @@ export class Karyawan {
   alamat?: string;
 
   @Column({ type: "enum", enum: ["L", "P"], nullable: true })
-  gend?: string;
+  gend?: "L" | "P";
 
   @Column({ type: "text", nullable: true })
   photo?: string;
@@ -40,7 +40,7 @@ export class Karyawan {
     nullable: true,
     onUpdate: "CURRENT_TIMESTAMP",
   })
-  updated_at?: Date;
+  update_at?: Date;
 
   @Column({ length: 50, type: "varchar", nullable: true })
   update_by?: string;

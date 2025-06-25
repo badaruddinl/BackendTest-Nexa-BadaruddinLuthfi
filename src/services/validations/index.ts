@@ -11,40 +11,41 @@ interface CustomJwtPayload extends JwtPayload {
   username: string;
 }
 
-const accessValidation = async (
-  request: Request,
-  reply: Response
-): Promise<void> => {
-  const authService = new AuthService();
-  try {
-    const info = await getInfo(request);
+// const accessValidation = async (
+//   request: Request,
+//   reply: Response
+// ): Promise<any> => {
+//     try {
+//       const authService = new AuthService();
+//     const info = await getInfoCheck(request);
 
-    if (!info) {
-      Interceptor(reply, StatusCodes.UNAUTHORIZED, false, "01", "Unautorized");
-    }
+//     if (!info) {
+//       Interceptor(reply, StatusCodes.UNAUTHORIZED, false, "01", "Unautorized");
+//       return;
+//     }
 
-    const authorized = await authService.checkID(info.id);
+//     const authorized = await authService.checkID(info.id);
 
-    if (authorized.statusCodes === StatusCodes.NOT_FOUND) {
-      Interceptor(
-        reply,
-        StatusCodes.UNAUTHORIZED,
-        false,
-        "01",
-        "Unauthorized, do not have permission to access.",
-        ""
-      );
-    }
-  } catch (error) {
-    Interceptor(
-      reply,
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      false,
-      "500",
-      "Error occurred"
-    );
-  }
-};
+//     if (authorized.statusCodes === StatusCodes.NOT_FOUND) {
+//       Interceptor(
+//         reply,
+//         StatusCodes.UNAUTHORIZED,
+//         false,
+//         "01",
+//         "Unauthorized, do not have permission to access.",
+//         ""
+//       );
+//     }
+//   } catch (error) {
+//     Interceptor(
+//       reply,
+//       StatusCodes.INTERNAL_SERVER_ERROR,
+//       false,
+//       "500",
+//       "Error occurred"
+//     );
+//   }
+// };
 
 const apiValidation = async (
   request: Request,
@@ -52,6 +53,17 @@ const apiValidation = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const authService = new AuthService();
+    const info = await getInfo(request);
+
+    if (!info) {
+      Interceptor(reply, StatusCodes.UNAUTHORIZED, false, "01", "Unautorized");
+      return;
+    }
+
+    const authorized = await authService.checkID(info.id);
+    console.log(authorized);
+
     const authorizationHeader = request.headers.authorization;
 
     if (!authorizationHeader) {
@@ -128,48 +140,33 @@ const apiValidation = async (
   }
 };
 
-const bearerValidation = async (
+const apiValidationAdmin = async (
   request: Request,
-  reply: Response
+  reply: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
-    const authorizationHeader = request.headers.authorization;
+    const authService = new AuthService();
+    const info = await getInfo(request);
 
-    if (!authorizationHeader) {
+    if (!info) {
+      Interceptor(reply, StatusCodes.UNAUTHORIZED, false, "01", "Unautorized");
+      return;
+    }
+
+    const authorized = await authService.checkID(info.id);
+
+    if (authorized.statusCodes !== StatusCodes.OK) {
       Interceptor(
         reply,
-        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
         false,
-        "401",
-        "Bearer token is missing"
+        "01",
+        "Dont have access"
       );
     }
 
-    const parts = authorizationHeader.split(" ");
-
-    if (parts.length !== 2 || parts[0].toLowerCase() !== "bearer") {
-      Interceptor(
-        reply,
-        StatusCodes.UNAUTHORIZED,
-        false,
-        "401",
-        "Invalid Bearer token format"
-      );
-    }
-
-    const token = parts[1];
-
-    const data = await verifyJwt(token);
-
-    if (!data.status) {
-      Interceptor(
-        reply,
-        StatusCodes.UNAUTHORIZED,
-        false,
-        "401",
-        "Token expired"
-      );
-    }
+    next();
   } catch (error) {
     Interceptor(
       reply,
@@ -181,4 +178,4 @@ const bearerValidation = async (
   }
 };
 
-export { accessValidation, apiValidation, bearerValidation };
+export { apiValidation, apiValidationAdmin };

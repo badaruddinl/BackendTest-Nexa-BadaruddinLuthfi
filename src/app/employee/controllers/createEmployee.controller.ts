@@ -1,27 +1,37 @@
 import { Request, Response } from "express";
 import Interceptor from "utils/responseInterceptor.utils";
-import { AuthService } from "../services/auth.service";
 import { StatusCodes } from "http-status-codes";
 import { AppHandler } from "types/express.s";
-import { RegisterInterface } from "../interfaces";
+import { EmployeeService } from "../services/employee.service";
+import { CreateEmployeeInterface } from "../interfaces";
+import { getInfo } from "utils/getInfo.utils";
 
-const registerController: AppHandler<{}, any, RegisterInterface> = async (
-  req: Request,
-  res: Response
-) => {
-  const authService = new AuthService();
+const createEmployeeController: AppHandler<
+  {},
+  any,
+  CreateEmployeeInterface
+> = async (req: Request, res: Response) => {
+  const employeeService = new EmployeeService();
 
   try {
-    const body = req.body;
+    const userLogin = await getInfo(req);
+    const reqBody = req.body;
 
-    const result = await authService.register(body);
+    const body = {
+      ...reqBody,
+      id: userLogin.id,
+      insert_by: userLogin.username,
+    } as CreateEmployeeInterface;
+
+    const result = await employeeService.ceateEmployee(body);
 
     Interceptor(
       res,
       result.statusCodes,
       result.success,
       result.code,
-      result.message
+      result.message,
+      result.data
     );
   } catch (error: unknown) {
     let errorMessage = "An unexpected error occurred";
@@ -43,4 +53,4 @@ const registerController: AppHandler<{}, any, RegisterInterface> = async (
   }
 };
 
-export default registerController;
+export default createEmployeeController;

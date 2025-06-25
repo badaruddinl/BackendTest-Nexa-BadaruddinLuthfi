@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { AppHandler } from "types/express.s";
 import { LoginInterface } from "app/auth/interfaces";
 
-export const loginController: AppHandler<{}, any, LoginInterface> = async (
+const loginController: AppHandler<{}, any, LoginInterface> = async (
   req: Request,
   res: Response
 ) => {
@@ -43,3 +43,5 @@ export const loginController: AppHandler<{}, any, LoginInterface> = async (
     );
   }
 };
+
+export default loginController;

@@ -1,11 +1,7 @@
 import { Router } from "express";
 import { registerRoute } from "utils/registerRoute.utils";
 import { loginController, registerController } from "../controllers";
-import {
-  accessValidation,
-  apiValidation,
-  bearerValidation,
-} from "services/validations";
+import { apiValidation } from "services/validations";
 const authRoutes = Router();
 
 registerRoute(authRoutes, {
@@ -18,6 +14,7 @@ registerRoute(authRoutes, {
 registerRoute(authRoutes, {
   method: "post",
   url: "/register",
+  preHandler: [apiValidation],
   handler: registerController,
 });
 
