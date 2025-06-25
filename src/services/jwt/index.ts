@@ -55,3 +55,63 @@ export const decodeExpAsDate = (token: string): Date | null => {
 
   return null;
 };
+
+export const verifyJwt = async (
+  token: string
+): Promise<{ status: boolean; decoded: JwtPayloadExtended | null }> => {
+  try {
+    if (await isJwtFormatValid(token)) {
+      const decoded = jwt.verify(token, secret) as JwtPayloadExtended;
+
+      if (!isTokenExpired(decoded)) {
+        return {
+          status: true,
+          decoded,
+        };
+      }
+    }
+
+    return {
+      status: false,
+      decoded: null,
+    };
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    return {
+      status: false,
+      decoded: null,
+    };
+  }
+};
+
+export const isJwtFormatValid = async (token: string): Promise<boolean> => {
+  const parts = token.split(".");
+
+  if (parts.length !== 3) {
+    return false;
+  }
+
+  const [header, payload] = parts;
+
+  if (!header || !payload) {
+    return false;
+  }
+
+  try {
+    Buffer.from(header, "base64").toString("utf8"); // Decode header
+    Buffer.from(payload, "base64").toString("utf8"); // Decode payload
+  } catch (error) {
+    return false; // Invalid base64 format
+  }
+
+  return true; // JWT format is correct
+};
+
+export const isTokenExpired = (decoded: JwtPayloadExtended): boolean => {
+  const expirationTime = decoded.exp;
+  if (typeof expirationTime !== "undefined") {
+    const currentTimestamp = Math.floor(Date.now() / 1000); // Current time in seconds
+    return expirationTime < currentTimestamp;
+  }
+  return true; // Missing exp claim
+};
